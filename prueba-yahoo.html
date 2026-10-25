@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MAXON INVERSIONES - Prueba de datos</title>
+  <style>
+    :root { color-scheme: dark; }
+    body {
+      background: #101410;
+      color: #f0f0f0;
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+    h1 { color: #62e879; }
+    .panel {
+      background: #1b241d;
+      border: 1px solid #3d7547;
+      border-radius: 12px;
+      padding: 18px;
+      margin-top: 18px;
+    }
+    .dato { margin: 14px 0; overflow-wrap: anywhere; }
+    .valor { color: #62e879; font-weight: bold; }
+    button {
+      background: #62e879;
+      color: #101410;
+      border: 0;
+      border-radius: 8px;
+      padding: 12px;
+      font-weight: bold;
+      width: 100%;
+      margin-top: 12px;
+    }
+    .nota { color: #b8c2b9; font-size: .9rem; line-height: 1.5; }
+  </style>
+</head>
+<body>
+  <h1>MAXON INVERSIONES</h1>
+  <p>Prueba independiente de cotizaciones de Yahoo Finance</p>
+
+  <div class="panel">
+    <h2>Microsoft (MSFT)</h2>
+    <div id="estado" role="status">Conectando con la fuente...</div>
+    <div id="datos"></div>
+    <button id="actualizar" type="button">Actualizar prueba</button>
+    <p class="nota">Esta prueba muestra el cierre de la última barra diaria disponible. La hora de mercado informada por Yahoo puede ser distinta. Los datos pueden estar demorados; no es una recomendación de inversión.</p>
+  </div>
+
+  <script>
+    async function consultar() {
+      const estado = document.getElementById("estado");
+      const datos = document.getElementById("datos");
+      const boton = document.getElementById("actualizar");
+      estado.textContent = "Consultando Yahoo Finance...";
+      datos.replaceChildren();
+      boton.disabled = true;
+
+      try {
+        const destino =
+          "https://query1.finance.yahoo.com/v8/finance/chart/MSFT?range=5d%26interval=1d";
+        const url = "https://proxy.cors.dev/" + destino;
+        const respuesta = await fetch(url, { method: "GET", credentials: "omit" });
+
+        if (!respuesta.ok) {
+          throw new Error("HTTP " + respuesta.status);
+        }
+
+        const json = await respuesta.json();
+        const resultado = json.chart?.result?.[0];
+        if (!resultado) {
+          const mensaje = json.chart?.error?.description || "Yahoo no devolvió datos para MSFT";
+          throw new Error(mensaje);
+        }
+
+        const meta = resultado.meta || {};
+        const cotizaciones = resultado.indicators?.quote?.[0];
+        const tiempos = resultado.timestamp || [];
+        if (!cotizaciones?.close?.length) {
+          throw new Error("La respuesta no contiene precios históricos");
+        }
+
+        let ultimo = -1;
+        for (let i = cotizaciones.close.length - 1; i >= 0; i--) {
+          if (cotizaciones.close[i] != null) {
+            ultimo = i;
+            break;
+          }
+        }
+        if (ultimo < 0) throw new Error("No hay precios disponibles");
+
+        const precio = cotizaciones.close[ultimo];
+        const volumen = cotizaciones.volume?.[ultimo];
+        const fecha = tiempos[ultimo]
+          ? new Date(tiempos[ultimo] * 1000).toLocaleString()
+          : "No disponible";
+        const anterior = meta.chartPreviousClose;
+        const variacion = anterior && anterior !== 0
+          ? ((precio - anterior) / anterior) * 100
+          : null;
+
+        function agregar(etiqueta, valor) {
+          const linea = document.createElement("div");
+          linea.className = "dato";
+          linea.append(document.createTextNode(etiqueta + ": "));
+          const span = document.createElement("span");
+          span.className = "valor";
+          span.textContent = valor;
+          linea.appendChild(span);
+          datos.appendChild(linea);
+        }
+
+        agregar("Símbolo", meta.symbol || "MSFT");
+        agregar("Último cierre diario disponible",
+          Number(precio).toLocaleString(undefined, { maximumFractionDigits: 4 }) +
+          " " + (meta.currency || ""));
+        agregar("Variación vs. cierre anterior",
+          variacion == null ? "No disponible" : variacion.toFixed(2) + "%");
+        agregar("Volumen de la barra",
+          volumen == null ? "No disponible" : Number(volumen).toLocaleString());
+        agregar("Fecha de la barra", fecha);
+        agregar("Hora de mercado informada por Yahoo",
+          meta.regularMarketTime
+            ? new Date(meta.regularMarketTime * 1000).toLocaleString()
+            : "No disponible");
+
+        estado.textContent = "Respuesta recibida correctamente.";
+      } catch (error) {
+        estado.textContent = "No se pudo completar la prueba: " + error.message +
+          ". El intermediario puede estar limitado o no disponible.";
+      } finally {
+        boton.disabled = false;
+      }
+    }
+
+    document.getElementById("actualizar").addEventListener("click", consultar);
+    consultar();
+  </script>
+</body>
+</html>
