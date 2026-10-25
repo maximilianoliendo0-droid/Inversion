@@ -1,0 +1,178 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MAXON INVERSIONES</title>
+<style>
+:root{color-scheme:dark;--bg:#0b1117;--panel:#151f28;--line:#293844;--green:#a4df32;--muted:#9aabb8}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:#eef3f6;font:15px Arial,sans-serif}
+main{max-width:900px;margin:auto;padding:20px 14px}
+.brand{color:var(--green);font-weight:bold;letter-spacing:2px}
+h1{font-size:27px;margin-bottom:5px}
+p,.muted{color:var(--muted);line-height:1.5}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:15px;padding:16px;margin:14px 0}
+button,select{padding:12px;border-radius:9px;border:1px solid var(--line);background:#202e38;color:white;font-size:14px}
+button{cursor:pointer}
+.primary{background:var(--green);color:#10170a;font-weight:bold;border:0}
+.controls{display:flex;gap:8px;flex-wrap:wrap}
+.controls>*{flex:1}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:14px;margin:10px 0}
+.top{display:flex;justify-content:space-between;gap:8px;align-items:center}
+.ticker{font-weight:bold;font-size:17px}
+.price{font-size:25px;font-weight:bold;margin:13px 0 5px}
+.tag{font-size:11px;border:1px solid var(--line);padding:5px 8px;border-radius:20px;color:var(--green)}
+.small{font-size:12px;color:var(--muted);line-height:1.6}
+.green{color:var(--green)}.red{color:#ff8585}
+#status{font-size:13px;color:var(--muted);margin-top:12px}
+</style>
+</head>
+<body>
+<main>
+<div class="brand">MAXON / INVERSIONES</div>
+<h1>Buscador de oportunidades</h1>
+<p>Tu panel para analizar inversiones de corto, mediano y largo plazo.</p>
+
+<div class="panel">
+<div class="small">MODO DE FUNCIONAMIENTO</div>
+<h2>Encontrá qué merece atención</h2>
+<p>Consultá precios, revisá tendencias y compará activos. Las señales son orientativas, no garantías de rentabilidad.</p>
+<div class="controls">
+<select id="plazo">
+<option value="corto">Corto plazo</option>
+<option value="medio">Mediano plazo</option>
+<option value="largo">Largo plazo</option>
+</select>
+<select id="grupo">
+<option value="cedears">CEDEARs principales</option>
+<option value="argentina">Acciones argentinas</option>
+</select>
+</div>
+<br>
+<button class="primary" id="buscar">Analizar activos</button>
+<div id="status">Listo para comenzar. Los datos se consultan cuando tocás el botón.</div>
+</div>
+
+<h2>Oportunidades para analizar</h2>
+<p class="small">Los activos se ordenarán cuando recibamos datos suficientes. Un precio aislado no determina si conviene comprar.</p>
+<div id="resultados"></div>
+
+<div class="panel">
+<h3>¿Cómo leer las señales?</h3>
+<p><span class="green">ANALIZAR</span> — merece una revisión más profunda.</p>
+<p>ESPERAR — faltan confirmaciones.</p>
+<p class="red">PRECAUCIÓN</p>
+<p class="small">Las señales definitivas requieren historial válido, liquidez y evaluación del riesgo. Esta primera versión no ejecuta operaciones ni constituye asesoramiento financiero.</p>
+</div>
+<p class="small">MAXON INVERSIONES · Prototipo en desarrollo · Verificá siempre la fecha y la moneda de cada cotización.</p>
+</main>
+
+<script>
+const activos={
+cedears:[
+["AAPL.BA","Apple"],["MSFT.BA","Microsoft"],
+["NVDA.BA","NVIDIA"],["AMZN.BA","Amazon"],
+["GOOGL.BA","Alphabet"],["META.BA","Meta"],
+["TSLA.BA","Tesla"],["MELI.BA","Mercado Libre"],
+["AMD.BA","AMD"],["SPY.BA","ETF S&P 500"],
+["QQQ.BA","ETF Nasdaq 100"],["KO.BA","Coca-Cola"],
+["V.BA","Visa"],["WMT.BA","Walmart"],
+["NFLX.BA","Netflix"]
+],
+argentina:[
+["GGAL.BA","Grupo Galicia"],["YPFD.BA","YPF"],
+["PAMP.BA","Pampa Energía"],["BMA.BA","Banco Macro"],
+["BBAR.BA","BBVA Argentina"],["CEPU.BA","Central Puerto"],
+["TGSU2.BA","Transportadora de Gas del Sur"],
+["TXAR.BA","Ternium Argentina"],["ALUA.BA","Aluar"],
+["BYMA.BA","BYMA"],["CRES.BA","Cresud"],
+["EDN.BA","Edenor"],["LOMA.BA","Loma Negra"]
+]
+};
+
+const status=document.getElementById("status");
+const resultados=document.getElementById("resultados");
+
+function formato(n){
+return new Intl.NumberFormat("es-AR",{maximumFractionDigits:2}).format(n);
+}
+
+function fecha(ts){
+return ts ? new Date(ts*1000).toLocaleString("es-AR") : "Fecha no disponible";
+}
+
+async function consultar(ticker,nombre){
+const tarjeta=document.createElement("div");
+tarjeta.className="card";
+tarjeta.innerHTML="<b>"+ticker+" · "+nombre+"</b><p class='small'>Consultando datos...</p>";
+resultados.appendChild(tarjeta);
+
+try{
+const destino="https://query1.finance.yahoo.com/v8/finance/chart/"
++encodeURIComponent(ticker)+"?range=3mo&interval=1d";
+const url="https://proxy.cors.dev/"+destino;
+const respuesta=await fetch(url);
+
+if(!respuesta.ok) throw new Error("Respuesta HTTP "+respuesta.status);
+
+const json=await respuesta.json();
+const r=json?.chart?.result?.[0];
+if(!r) throw new Error("No hay datos para este símbolo");
+
+const meta=r.meta||{};
+const serie=r.indicators?.quote?.[0]||{};
+const cierres=(serie.close||[]).filter(x=>typeof x==="number");
+if(cierres.length<2) throw new Error("Historial insuficiente");
+
+const precio=cierres[cierres.length-1];
+const anterior=cierres[cierres.length-2];
+const variacion=(precio-anterior)/anterior*100;
+const moneda=meta.currency||"Moneda no informada";
+const tiempos=r.timestamp||[];
+const fechaDato=fecha(tiempos[tiempos.length-1]);
+const cierresValidos=cierres.slice(-20);
+const media=cierresValidos.reduce((a,b)=>a+b,0)/cierresValidos.length;
+
+let senal="ESPERAR";
+let motivo="Esperar más confirmaciones antes de evaluar una entrada.";
+if(precio>media && variacion>0){
+senal="ANALIZAR";
+motivo="Precio por encima de su media reciente y última variación positiva.";
+}else if(precio<media && variacion<0){
+senal="PRECAUCIÓN";
+motivo="Precio por debajo de su media reciente y última variación negativa.";
+}
+
+tarjeta.innerHTML=`
+<div class="top">
+<div><div class="ticker">${ticker}</div><div class="small">${nombre}</div></div>
+<span class="tag">${senal}</span>
+</div>
+<div class="price">${moneda==="ARS"?"ARS $ ":moneda==="USD"?"USD $ ":""}${formato(precio)}</div>
+<div class="${variacion>=0?"green":"red"}">${variacion>=0?"+":""}${formato(variacion)}% respecto del dato anterior</div>
+<p>${motivo}</p>
+<div class="small">Moneda: ${moneda}<br>Último dato de mercado: ${fechaDato}<br>Media simple de los últimos ${cierresValidos.length} cierres: ${formato(media)}</div>`;
+}catch(error){
+tarjeta.innerHTML=`<b>${ticker} · ${nombre}</b><p class="red">No se pudieron validar los datos.</p><p class="small">${String(error.message||error)}</p>`;
+}
+}
+
+document.getElementById("buscar").addEventListener("click",async()=>{
+const lista=activos[document.getElementById("grupo").value];
+const plazo=document.getElementById("plazo").value;
+resultados.innerHTML="";
+document.getElementById("buscar").disabled=true;
+for(let i=0;i<lista.length;i++){
+status.textContent=`Consultando ${i+1} de ${lista.length} activos · Plazo seleccionado: ${plazo}`;
+await consultar(lista[i][0],lista[i][1]);
+await new Promise(resolve=>setTimeout(resolve,400));
+}
+status.textContent="Consulta terminada. Revisá los errores y la fecha de los datos.";
+document.getElementById("buscar").disabled=false;
+});
+</script>
+</body>
+  </html>
+  
