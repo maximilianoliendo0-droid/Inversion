@@ -4,175 +4,274 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>MAXON INVERSIONES</title>
+<meta name="theme-color" content="#101713">
+<title>MAXON INVERSIONES | Oportunidades</title>
 <style>
-:root{color-scheme:dark;--bg:#0b1117;--panel:#151f28;--line:#293844;--green:#a4df32;--muted:#9aabb8}
+:root {
+  --bg:#0b100e; --panel:#141c18; --panel2:#19231d;
+  --green:#a3e635; --text:#f2f5f1; --muted:#98a79d;
+  --red:#ff7777; --border:#29372e; --yellow:#f4cb70;
+}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:#eef3f6;font:15px Arial,sans-serif}
-main{max-width:900px;margin:auto;padding:20px 14px}
-.brand{color:var(--green);font-weight:bold;letter-spacing:2px}
-h1{font-size:27px;margin-bottom:5px}
-p,.muted{color:var(--muted);line-height:1.5}
-.panel{background:var(--panel);border:1px solid var(--line);border-radius:15px;padding:16px;margin:14px 0}
-button,select{padding:12px;border-radius:9px;border:1px solid var(--line);background:#202e38;color:white;font-size:14px}
-button{cursor:pointer}
-.primary{background:var(--green);color:#10170a;font-weight:bold;border:0}
-.controls{display:flex;gap:8px;flex-wrap:wrap}
-.controls>*{flex:1}
-.card{background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:14px;margin:10px 0}
-.top{display:flex;justify-content:space-between;gap:8px;align-items:center}
-.ticker{font-weight:bold;font-size:17px}
-.price{font-size:25px;font-weight:bold;margin:13px 0 5px}
-.tag{font-size:11px;border:1px solid var(--line);padding:5px 8px;border-radius:20px;color:var(--green)}
-.small{font-size:12px;color:var(--muted);line-height:1.6}
-.green{color:var(--green)}.red{color:#ff8585}
-#status{font-size:13px;color:var(--muted);margin-top:12px}
+body{margin:0;background:var(--bg);color:var(--text);
+font-family:Arial,Helvetica,sans-serif}
+header{padding:24px 16px 18px;background:#101713;
+border-bottom:1px solid var(--border)}
+.wrap{max-width:1100px;margin:auto}
+.brand{color:var(--green);font-size:12px;font-weight:800;
+letter-spacing:3px}
+h1{font-size:27px;margin:8px 0}
+.subtitle{font-size:13px;color:var(--muted);line-height:1.5}
+main{max-width:1100px;margin:auto;padding:16px}
+.toolbar{display:flex;flex-wrap:wrap;gap:9px;margin:15px 0}
+button,select,input{border:1px solid var(--border);border-radius:9px;
+padding:11px;background:var(--panel2);color:var(--text);font-size:13px}
+button{cursor:pointer;font-weight:700}
+button.primary{background:var(--green);color:#15200e;border:0}
+button:disabled{opacity:.55}
+.status{background:var(--panel);border:1px solid var(--border);
+border-radius:10px;padding:12px;font-size:12px;color:var(--muted);
+line-height:1.5;margin:12px 0}
+.cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.card{background:var(--panel);border:1px solid var(--border);
+border-radius:13px;padding:14px;min-width:0}
+.card h3{font-size:16px;margin:0 0 5px}
+.symbol{font-size:11px;color:var(--muted)}
+.price{font-size:24px;font-weight:800;margin:14px 0 4px;
+overflow-wrap:anywhere}
+.change{font-size:12px;font-weight:700}
+.up{color:var(--green)} .down{color:var(--red)}
+.neutral{color:var(--yellow)}
+.metrics{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+gap:8px;margin-top:15px}
+.metric{background:#0e1511;border-radius:8px;padding:9px;min-width:0}
+.metric span{display:block;color:var(--muted);font-size:10px;margin-bottom:6px}
+.metric strong{font-size:13px;overflow-wrap:anywhere}
+.signal{display:inline-block;border-radius:6px;padding:6px 8px;
+font-size:11px;font-weight:800;margin-top:12px}
+.buy{background:#24351c;color:var(--green)}
+.watch{background:#3a321c;color:var(--yellow)}
+.risk{background:#3b2020;color:var(--red)}
+.error{color:var(--red);font-size:12px;margin-top:12px;line-height:1.5}
+.section-title{font-size:18px;margin:25px 0 12px}
+.note{font-size:12px;color:var(--muted);line-height:1.6;margin:22px 0}
+footer{border-top:1px solid var(--border);padding:20px 16px;
+color:var(--muted);font-size:11px;text-align:center}
+@media(min-width:700px){.cards{grid-template-columns:repeat(3,minmax(0,1fr))}
+header{padding-top:32px}h1{font-size:34px}}
 </style>
 </head>
 <body>
+<header>
+ <div class="wrap">
+  <div class="brand">MAXON / INVERSIONES</div>
+  <h1>Radar de oportunidades</h1>
+  <div class="subtitle">Mercado argentino · CEDEARs · Análisis técnico</div>
+ </div>
+</header>
 <main>
-<div class="brand">MAXON / INVERSIONES</div>
-<h1>Buscador de oportunidades</h1>
-<p>Tu panel para analizar inversiones de corto, mediano y largo plazo.</p>
-
-<div class="panel">
-<div class="small">MODO DE FUNCIONAMIENTO</div>
-<h2>Encontrá qué merece atención</h2>
-<p>Consultá precios, revisá tendencias y compará activos. Las señales son orientativas, no garantías de rentabilidad.</p>
-<div class="controls">
-<select id="plazo">
-<option value="corto">Corto plazo</option>
-<option value="medio">Mediano plazo</option>
-<option value="largo">Largo plazo</option>
-</select>
-<select id="grupo">
-<option value="cedears">CEDEARs principales</option>
-<option value="argentina">Acciones argentinas</option>
-</select>
-</div>
-<br>
-<button class="primary" id="buscar">Analizar activos</button>
-<div id="status">Listo para comenzar. Los datos se consultan cuando tocás el botón.</div>
-</div>
-
-<h2>Oportunidades para analizar</h2>
-<p class="small">Los activos se ordenarán cuando recibamos datos suficientes. Un precio aislado no determina si conviene comprar.</p>
-<div id="resultados"></div>
-
-<div class="panel">
-<h3>¿Cómo leer las señales?</h3>
-<p><span class="green">ANALIZAR</span> — merece una revisión más profunda.</p>
-<p>ESPERAR — faltan confirmaciones.</p>
-<p class="red">PRECAUCIÓN</p>
-<p class="small">Las señales definitivas requieren historial válido, liquidez y evaluación del riesgo. Esta primera versión no ejecuta operaciones ni constituye asesoramiento financiero.</p>
-</div>
-<p class="small">MAXON INVERSIONES · Prototipo en desarrollo · Verificá siempre la fecha y la moneda de cada cotización.</p>
+ <div class="toolbar">
+  <button class="primary" id="refresh">↻ Actualizar cotizaciones</button>
+  <select id="filter" aria-label="Filtrar activos">
+   <option value="all">Todos los activos</option>
+   <option value="buy">Posibles oportunidades</option>
+   <option value="watch">En observación</option>
+   <option value="risk">Riesgo elevado</option>
+  </select>
+ </div>
+ <div class="status" id="status">Preparando análisis…</div>
+ <h2 class="section-title">Oportunidades para investigar</h2>
+ <div id="cards" class="cards"></div>
+ <p class="note">
+  Los indicadores son herramientas de análisis, no predicciones.
+  Un RSI bajo no implica por sí solo que un activo vaya a subir.
+  Los resultados dependen de la disponibilidad y calidad de los datos.
+ </p>
 </main>
-
+<footer>
+ MAXON INVERSIONES · Herramienta personal de análisis · No ejecuta operaciones
+</footer>
 <script>
-const activos={
-cedears:[
-["AAPL.BA","Apple"],["MSFT.BA","Microsoft"],
-["NVDA.BA","NVIDIA"],["AMZN.BA","Amazon"],
-["GOOGL.BA","Alphabet"],["META.BA","Meta"],
-["TSLA.BA","Tesla"],["MELI.BA","Mercado Libre"],
-["AMD.BA","AMD"],["SPY.BA","ETF S&P 500"],
-["QQQ.BA","ETF Nasdaq 100"],["KO.BA","Coca-Cola"],
-["V.BA","Visa"],["WMT.BA","Walmart"],
-["NFLX.BA","Netflix"]
-],
-argentina:[
-["GGAL.BA","Grupo Galicia"],["YPFD.BA","YPF"],
-["PAMP.BA","Pampa Energía"],["BMA.BA","Banco Macro"],
-["BBAR.BA","BBVA Argentina"],["CEPU.BA","Central Puerto"],
-["TGSU2.BA","Transportadora de Gas del Sur"],
-["TXAR.BA","Ternium Argentina"],["ALUA.BA","Aluar"],
-["BYMA.BA","BYMA"],["CRES.BA","Cresud"],
-["EDN.BA","Edenor"],["LOMA.BA","Loma Negra"]
-]
-};
+"use strict";
 
-const status=document.getElementById("status");
-const resultados=document.getElementById("resultados");
+const ASSETS = [
+ {symbol:"AAPL.BA",name:"Apple",type:"CEDEAR"},
+ {symbol:"MSFT.BA",name:"Microsoft",type:"CEDEAR"},
+ {symbol:"NVDA.BA",name:"NVIDIA",type:"CEDEAR"},
+ {symbol:"AMZN.BA",name:"Amazon",type:"CEDEAR"},
+ {symbol:"GOOGL.BA",name:"Alphabet",type:"CEDEAR"},
+ {symbol:"META.BA",name:"Meta Platforms",type:"CEDEAR"},
+ {symbol:"TSLA.BA",name:"Tesla",type:"CEDEAR"},
+ {symbol:"SPY.BA",name:"ETF S&P 500",type:"CEDEAR"},
+ {symbol:"KO.BA",name:"Coca-Cola",type:"CEDEAR"},
+ {symbol:"MELI.BA",name:"MercadoLibre",type:"CEDEAR"},
+ {symbol:"GGAL.BA",name:"Grupo Galicia",type:"Acción argentina"},
+ {symbol:"YPFD.BA",name:"YPF",type:"Acción argentina"},
+ {symbol:"BMA.BA",name:"Banco Macro",type:"Acción argentina"},
+ {symbol:"PAMP.BA",name:"Pampa Energía",type:"Acción argentina"},
+ {symbol:"CEPU.BA",name:"Central Puerto",type:"Acción argentina"},
+ {symbol:"TXAR.BA",name:"Ternium Argentina",type:"Acción argentina"},
+ {symbol:"ALUA.BA",name:"Aluar",type:"Acción argentina"},
+ {symbol:"TGSU2.BA",name:"Transportadora Gas del Sur",type:"Acción argentina"}
+];
 
-function formato(n){
-return new Intl.NumberFormat("es-AR",{maximumFractionDigits:2}).format(n);
+const $ = id => document.getElementById(id);
+let results = [];
+let loading = false;
+
+function fmt(value, decimals=2) {
+ if (!Number.isFinite(value)) return "—";
+ return value.toLocaleString("es-AR",{
+  minimumFractionDigits:decimals,maximumFractionDigits:decimals
+ });
+}
+function dateFmt(unix) {
+ if (!unix) return "Fecha no disponible";
+ return new Date(unix*1000).toLocaleDateString("es-AR",{
+  day:"2-digit",month:"2-digit",year:"numeric"
+ });
+}
+function average(arr) {
+ const valid=arr.filter(Number.isFinite);
+ return valid.length ? valid.reduce((a,b)=>a+b,0)/valid.length : NaN;
+}
+function rsi(closes,period=14) {
+ if(closes.length<period+1) return NaN;
+ let gains=0,losses=0;
+ for(let i=closes.length-period;i<closes.length;i++){
+  const d=closes[i]-closes[i-1];
+  if(d>0) gains+=d; else losses-=d;
+ }
+ const ag=gains/period, al=losses/period;
+ if(al===0) return ag===0?50:100;
+ return 100-(100/(1+ag/al));
+}
+function analyze(asset,raw) {
+ const chart=raw?.chart;
+ if(chart?.error) throw Error(chart.error.description||"Error del proveedor");
+ const result=chart?.result?.[0];
+ if(!result) throw Error("No se recibieron cotizaciones");
+ const q=result.indicators?.quote?.[0];
+ const timestamps=result.timestamp||[];
+ if(!q?.close) throw Error("No hay historial de precios");
+
+ const rows=timestamps.map((t,i)=>({
+  t, close:q.close[i], high:q.high?.[i], low:q.low?.[i],
+  volume:q.volume?.[i]
+ })).filter(x=>Number.isFinite(x.close)&&x.close>0);
+
+ if(rows.length<20) throw Error("Historial insuficiente");
+ const closes=rows.map(x=>x.close);
+ const last=rows[rows.length-1];
+ const previous=rows[rows.length-2];
+ const ma20=average(closes.slice(-20));
+ const ma50=closes.length>=50?average(closes.slice(-50)):NaN;
+ const yearRows=rows.filter(x=>x.t>=last.t-365*24*60*60);
+ const yearHigh=Math.max(...yearRows.map(x=>x.high).filter(Number.isFinite));
+ const yearLow=Math.min(...yearRows.map(x=>x.low).filter(Number.isFinite));
+ const change=(last.close/previous.close-1)*100;
+ const rv=rsi(closes);
+ let score=0;
+ if(Number.isFinite(rv)){if(rv<35)score+=1;if(rv>70)score-=2;}
+ if(Number.isFinite(ma20))score+=last.close>ma20?1:-1;
+ if(Number.isFinite(ma50))score+=last.close>ma50?1:-1;
+ if(change>0)score+=1; else if(change<0)score-=1;
+
+ let signal="watch",signalText="En observación";
+ if(score>=2 && rv<70){signal="buy";signalText="Posible oportunidad";}
+ if(score<=-2 || rv>=75){signal="risk";signalText="Riesgo elevado";}
+
+ return {
+  ...asset,price:last.close,change,volume:last.volume,
+  date:last.t,ma20,ma50,rsi:rv,yearHigh,yearLow,
+  signal,signalText,score
+ };
 }
 
-function fecha(ts){
-return ts ? new Date(ts*1000).toLocaleString("es-AR") : "Fecha no disponible";
+async function fetchAsset(asset) {
+ const target="https://query1.finance.yahoo.com/v8/finance/chart/"
+  +encodeURIComponent(asset.symbol)+"?range=1y&interval=1d";
+ const url="https://corsproxy.io/?url="+encodeURIComponent(target);
+ const response=await fetch(url,{cache:"no-store"});
+ if(!response.ok) throw Error("Fuente de datos no disponible (HTTP "+response.status+")");
+ const raw=await response.json();
+ return analyze(asset,raw);
 }
 
-async function consultar(ticker,nombre){
-const tarjeta=document.createElement("div");
-tarjeta.className="card";
-tarjeta.innerHTML="<b>"+ticker+" · "+nombre+"</b><p class='small'>Consultando datos...</p>";
-resultados.appendChild(tarjeta);
-
-try{
-const destino="https://query1.finance.yahoo.com/v8/finance/chart/"
-+encodeURIComponent(ticker)+"?range=3mo&interval=1d";
-const url="https://proxy.cors.dev/"+destino;
-const respuesta=await fetch(url);
-
-if(!respuesta.ok) throw new Error("Respuesta HTTP "+respuesta.status);
-
-const json=await respuesta.json();
-const r=json?.chart?.result?.[0];
-if(!r) throw new Error("No hay datos para este símbolo");
-
-const meta=r.meta||{};
-const serie=r.indicators?.quote?.[0]||{};
-const cierres=(serie.close||[]).filter(x=>typeof x==="number");
-if(cierres.length<2) throw new Error("Historial insuficiente");
-
-const precio=cierres[cierres.length-1];
-const anterior=cierres[cierres.length-2];
-const variacion=(precio-anterior)/anterior*100;
-const moneda=meta.currency||"Moneda no informada";
-const tiempos=r.timestamp||[];
-const fechaDato=fecha(tiempos[tiempos.length-1]);
-const cierresValidos=cierres.slice(-20);
-const media=cierresValidos.reduce((a,b)=>a+b,0)/cierresValidos.length;
-
-let senal="ESPERAR";
-let motivo="Esperar más confirmaciones antes de evaluar una entrada.";
-if(precio>media && variacion>0){
-senal="ANALIZAR";
-motivo="Precio por encima de su media reciente y última variación positiva.";
-}else if(precio<media && variacion<0){
-senal="PRECAUCIÓN";
-motivo="Precio por debajo de su media reciente y última variación negativa.";
+function cardHTML(x) {
+ const chClass=x.change>=0?"up":"down";
+ const signalClass=x.signal==="buy"?"buy":x.signal==="risk"?"risk":"watch";
+ const rsiText=Number.isFinite(x.rsi)?fmt(x.rsi,1):"Insuficiente";
+ const rsiNote=!Number.isFinite(x.rsi)?"Sin datos suficientes":
+  x.rsi<30?"Sobreventa técnica":x.rsi>70?"Sobrecompra técnica":"Zona intermedia";
+ return `<article class="card">
+  <div class="symbol">${x.type} · ${x.symbol}</div>
+  <h3>${x.name}</h3>
+  <div class="price">${fmt(x.price)}</div>
+  <div class="change ${chClass}">${x.change>=0?"+":""}${fmt(x.change)}% última rueda</div>
+  <div class="metrics">
+   <div class="metric"><span>RSI (14)</span><strong>${rsiText}</strong></div>
+   <div class="metric"><span>Lectura RSI</span><strong>${rsiNote}</strong></div>
+   <div class="metric"><span>Media 20 ruedas</span><strong>${fmt(x.ma20)}</strong></div>
+   <div class="metric"><span>Media 50 ruedas</span><strong>${fmt(x.ma50)}</strong></div>
+   <div class="metric"><span>Máximo 52 semanas</span><strong>${fmt(x.yearHigh)}</strong></div>
+   <div class="metric"><span>Mínimo 52 semanas</span><strong>${fmt(x.yearLow)}</strong></div>
+  </div>
+  <div><span class="signal ${signalClass}">${x.signalText}</span></div>
+  <div class="symbol" style="margin-top:10px">Último dato: ${dateFmt(x.date)}</div>
+  <div class="symbol" style="margin-top:5px">Puntaje técnico: ${x.score} · No es una recomendación automática</div>
+ </article>`;
 }
 
-tarjeta.innerHTML=`
-<div class="top">
-<div><div class="ticker">${ticker}</div><div class="small">${nombre}</div></div>
-<span class="tag">${senal}</span>
-</div>
-<div class="price">${moneda==="ARS"?"ARS $ ":moneda==="USD"?"USD $ ":""}${formato(precio)}</div>
-<div class="${variacion>=0?"green":"red"}">${variacion>=0?"+":""}${formato(variacion)}% respecto del dato anterior</div>
-<p>${motivo}</p>
-<div class="small">Moneda: ${moneda}<br>Último dato de mercado: ${fechaDato}<br>Media simple de los últimos ${cierresValidos.length} cierres: ${formato(media)}</div>`;
-}catch(error){
-tarjeta.innerHTML=`<b>${ticker} · ${nombre}</b><p class="red">No se pudieron validar los datos.</p><p class="small">${String(error.message||error)}</p>`;
-}
+function render() {
+ const filter=$("filter").value;
+ const list=results.filter(x=>filter==="all"||x.signal===filter)
+  .sort((a,b)=>b.score-a.score);
+ $("cards").innerHTML=list.length
+  ?list.map(cardHTML).join("")
+  :'<div class="status">No hay activos para este filtro todavía.</div>';
 }
 
-document.getElementById("buscar").addEventListener("click",async()=>{
-const lista=activos[document.getElementById("grupo").value];
-const plazo=document.getElementById("plazo").value;
-resultados.innerHTML="";
-document.getElementById("buscar").disabled=true;
-for(let i=0;i<lista.length;i++){
-status.textContent=`Consultando ${i+1} de ${lista.length} activos · Plazo seleccionado: ${plazo}`;
-await consultar(lista[i][0],lista[i][1]);
-await new Promise(resolve=>setTimeout(resolve,400));
+async function refresh() {
+ if(loading)return;
+ loading=true;
+ $("refresh").disabled=true;
+ $("status").textContent="Consultando cotizaciones e historial técnico. Puede tardar un poco…";
+ results=[];
+ render();
+ let ok=0,errors=[];
+ for(const asset of ASSETS) {
+  try {
+   const item=await fetchAsset(asset);
+   results.push(item);ok++;
+   $("status").textContent=`Analizando activos: ${ok} correctos de ${ASSETS.length} consultados…`;
+   render();
+  } catch(e) {
+   errors.push(asset.symbol+": "+(e.message||"error desconocido"));
+  }
+ }
+ $("status").textContent=
+  `Consulta finalizada: ${ok} activos con datos y ${errors.length} con error. `+
+  `Actualización de consulta: ${new Date().toLocaleString("es-AR")}. `+
+  (errors.length?"Algunos símbolos o la fuente pueden no estar disponibles.":"");
+ if(errors.length) {
+  const details=document.createElement("details");
+  details.className="status";
+  const summary=document.createElement("summary");
+  summary.textContent="Ver errores de datos";
+  const pre=document.createElement("div");
+  pre.style.marginTop="10px";
+  pre.textContent=errors.join("\n");
+  details.append(summary,pre);
+  $("status").appendChild(details);
+ }
+ loading=false;
+ $("refresh").disabled=false;
 }
-status.textContent="Consulta terminada. Revisá los errores y la fecha de los datos.";
-document.getElementById("buscar").disabled=false;
-});
+
+$("refresh").addEventListener("click",refresh);
+$("filter").addEventListener("change",render);
+refresh();
 </script>
 </body>
-  </html>
-  
+</html>
