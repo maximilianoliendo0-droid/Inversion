@@ -94,6 +94,7 @@ header{padding-top:32px}h1{font-size:34px}}
 <script>
 "use strict";
 
+
 const ASSETS = [
  {symbol:"AAPL.BA",name:"Apple",type:"CEDEAR"},
  {symbol:"MSFT.BA",name:"Microsoft",type:"CEDEAR"},
@@ -102,7 +103,7 @@ const ASSETS = [
  {symbol:"GOOGL.BA",name:"Alphabet",type:"CEDEAR"},
  {symbol:"META.BA",name:"Meta Platforms",type:"CEDEAR"},
  {symbol:"TSLA.BA",name:"Tesla",type:"CEDEAR"},
- {symbol:"SPY.BA",name:"ETF S&P 500",type:"CEDEAR"},
+ {symbol:"SPY.BA",name:"ETF S&P 500",type:"ETF"},
  {symbol:"KO.BA",name:"Coca-Cola",type:"CEDEAR"},
  {symbol:"MELI.BA",name:"MercadoLibre",type:"CEDEAR"},
  {symbol:"GGAL.BA",name:"Grupo Galicia",type:"Acción argentina"},
@@ -112,8 +113,42 @@ const ASSETS = [
  {symbol:"CEPU.BA",name:"Central Puerto",type:"Acción argentina"},
  {symbol:"TXAR.BA",name:"Ternium Argentina",type:"Acción argentina"},
  {symbol:"ALUA.BA",name:"Aluar",type:"Acción argentina"},
- {symbol:"TGSU2.BA",name:"Transportadora Gas del Sur",type:"Acción argentina"}
+ {symbol:"TGSU2.BA",name:"Transportadora Gas del Sur",type:"Acción argentina"},
+
+ {symbol:"QQQ.BA",name:"ETF Nasdaq 100",type:"ETF"},
+ {symbol:"DIA.BA",name:"ETF Dow Jones",type:"ETF"},
+ {symbol:"IWM.BA",name:"ETF Russell 2000",type:"ETF"},
+ {symbol:"EEM.BA",name:"ETF Mercados emergentes",type:"ETF"},
+ {symbol:"EWZ.BA",name:"ETF Brasil",type:"ETF"},
+ {symbol:"GLD.BA",name:"ETF Oro",type:"ETF"},
+ {symbol:"XLF.BA",name:"ETF Sector financiero",type:"ETF"},
+ {symbol:"XLE.BA",name:"ETF Sector energía",type:"ETF"},
+ {symbol:"SMH.BA",name:"ETF Semiconductores",type:"ETF"},
+ {symbol:"ARKK.BA",name:"ETF Innovación",type:"ETF"},
+ {symbol:"CIBR.BA",name:"ETF Ciberseguridad",type:"ETF"},
+
+ {symbol:"F.BA",name:"Ford",type:"CEDEAR"},
+ {symbol:"RBLX.BA",name:"Roblox",type:"CEDEAR"},
+ {symbol:"MU.BA",name:"Micron Technology",type:"CEDEAR"},
+ {symbol:"UBER.BA",name:"Uber",type:"CEDEAR"},
+ {symbol:"PANW.BA",name:"Palo Alto Networks",type:"CEDEAR"},
+ {symbol:"MSTR.BA",name:"Strategy",type:"CEDEAR"},
+ {symbol:"ABNB.BA",name:"Airbnb",type:"CEDEAR"},
+ {symbol:"VALE.BA",name:"Vale",type:"CEDEAR"},
+ {symbol:"PBR.BA",name:"Petrobras",type:"CEDEAR"},
+ {symbol:"ITUB.BA",name:"Itaú Unibanco",type:"CEDEAR"},
+ {symbol:"NKE.BA",name:"Nike",type:"CEDEAR"},
+ {symbol:"DIS.BA",name:"Disney",type:"CEDEAR"},
+ {symbol:"JPM.BA",name:"JPMorgan",type:"CEDEAR"},
+ {symbol:"V.BA",name:"Visa",type:"CEDEAR"},
+ {symbol:"AMD.BA",name:"AMD",type:"CEDEAR"},
+ {symbol:"INTC.BA",name:"Intel",type:"CEDEAR"},
+ {symbol:"WMT.BA",name:"Walmart",type:"CEDEAR"},
+ {symbol:"PEP.BA",name:"PepsiCo",type:"CEDEAR"},
+ {symbol:"JNJ.BA",name:"Johnson & Johnson",type:"CEDEAR"},
+ {symbol:"ORCL.BA",name:"Oracle",type:"CEDEAR"}
 ];
+
 
 const $ = id => document.getElementById(id);
 let results = [];
