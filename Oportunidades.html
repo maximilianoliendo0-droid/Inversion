@@ -342,7 +342,7 @@ async function refresh() {
  results=[];
  render();
  let ok=0,errors=[];
- for(const asset of ASSETS) {
+ for (const asset of ASSETS) {
   try {
    const item=await fetchAsset(asset);
    results.push(item);ok++;
