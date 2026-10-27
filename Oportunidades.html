@@ -334,42 +334,74 @@ function render() {
   :'<div class="status">No hay activos para este filtro todavía.</div>';
 }
 
+
 async function refresh() {
- if(loading)return;
- loading=true;
- $("refresh").disabled=true;
- $("status").textContent="Consultando cotizaciones e historial técnico. Puede tardar un poco…";
- results=[];
+ if (loading) return;
+ loading = true;
+ $("refresh").disabled = true;
+ $("status").textContent = "Consultando activos por grupos...";
+ results = [];
  render();
- let ok=0,errors=[];
- for (const asset of ASSETS) {
-  try {
-   const item=await fetchAsset(asset);
-   results.push(item);ok++;
-   $("status").textContent=`Analizando activos: ${ok} correctos de ${ASSETS.length} consultados…`;
+
+ let ok = 0, errors = [];
+
+ try {
+  const batchSize = 5;
+
+  for (let i = 0; i < ASSETS.length; i += batchSize) {
+   const batch = ASSETS.slice(i, i + batchSize);
+
+   const settled = await Promise.allSettled(
+    batch.map(asset => fetchAsset(asset))
+   );
+
+   settled.forEach((result, index) => {
+    const asset = batch[index];
+
+    if (result.status === "fulfilled") {
+     results.push(result.value);
+     ok++;
+    } else {
+     const msg = result.reason?.message || "Error desconocido";
+     errors.push(asset.symbol + ": " + msg);
+    }
+   });
+
+   $("status").textContent =
+    `Analizando: ${Math.min(i + batchSize, ASSETS.length)} de ${ASSETS.length}. ` +
+    `${ok} correctos; ${errors.length} con error.`;
+
    render();
-  } catch(e) {
-   errors.push(asset.symbol+": "+(e.message||"error desconocido"));
   }
+
+  $("status").textContent =
+   `Consulta finalizada: ${ok} activos con datos y ${errors.length} con error. ` +
+   `Consulta: ${new Date().toLocaleString("es-AR")}.`;
+
+  if (errors.length) {
+   const details = document.createElement("details");
+   details.className = "status";
+
+   const summary = document.createElement("summary");
+   summary.textContent = "Ver errores de datos";
+
+   const pre = document.createElement("div");
+   pre.style.marginTop = "10px";
+   pre.textContent = errors.join("\n");
+
+   details.append(summary, pre);
+   $("status").appendChild(details);
+  }
+ } catch (e) {
+  $("status").textContent =
+   "No se pudo completar el análisis: " +
+   (e.message || "error inesperado");
+ } finally {
+  loading = false;
+  $("refresh").disabled = false;
  }
- $("status").textContent=
-  `Consulta finalizada: ${ok} activos con datos y ${errors.length} con error. `+
-  `Actualización de consulta: ${new Date().toLocaleString("es-AR")}. `+
-  (errors.length?"Algunos símbolos o la fuente pueden no estar disponibles.":"");
- if(errors.length) {
-  const details=document.createElement("details");
-  details.className="status";
-  const summary=document.createElement("summary");
-  summary.textContent="Ver errores de datos";
-  const pre=document.createElement("div");
-  pre.style.marginTop="10px";
-  pre.textContent=errors.join("\n");
-  details.append(summary,pre);
-  $("status").appendChild(details);
- }
- loading=false;
- $("refresh").disabled=false;
 }
+
 
 $("refresh").addEventListener("click",refresh);
 $("filter").addEventListener("change",render);
